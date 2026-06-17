@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>孟璋奖励岛</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.65) 0, rgba(255,255,255,0) 120px),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.55) 0, rgba(255,255,255,0) 150px),
+                linear-gradient(to bottom, #b7e4c7 0%, #d8f3dc 40%, #95d5b2 100%);
+            min-height: 100vh;
+            font-family: "ZCOOL KuaiLe", cursive;
+            text-align: center;
+            padding: 30px;
+            color: #5a3e2b;
+        }
+
+        .card {
+            background: #fffaf0;
+            max-width: 650px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 35px;
+            border: 8px solid #c89f65;
+            box-shadow: 0 10px 0 #9a6b3c, 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            color: #2f8f5b;
+            font-size: 42px;
+            text-shadow: 2px 2px 0 #ffffff;
+        }
+
+        .grass {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 90px;
+            font-weight: bold;
+            color: #2f8f5b;
+            margin: 20px 0;
+            text-shadow: 4px 4px 0 #ffffff, 6px 6px 0 rgba(0,0,0,0.08);
+        }
+
+        .score.pop {
+            animation: pop 0.35s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.25); }
+            100% { transform: scale(1); }
+        }
+
+        .reward-box {
+            background: #fffdf1;
+            border: 2px dashed #d4a65a;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .gift-row {
+            background: #fff8dc;
+            border: 2px solid #e0c27a;
+            border-radius: 16px;
+            padding: 12px;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .gift-row.unlocked {
+            background: #e0f5d8;
+            border-color: #7bcf8e;
+        }
+
+        .gift-row.locked {
+            opacity: 0.75;
+        }
+
+        .message-box {
+            display: none;
+            background: #fff3b0;
+            border: 3px solid #d4a65a;
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 22px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: #e8d7a8;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 3px solid #9a6b3c;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #7bcf8e;
+            border-radius: 999px;
+            transition: 0.3s;
+        }
+
+        button {
+            background: #7bcf8e;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 12px 18px;
+            margin: 5px;
+            font-size: 16px;
+            font-family: "ZCOOL KuaiLe", cursive;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 0 #4f9a62;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #4f9a62;
+        }
+
+        .danger {
+            background: #e07a5f;
+            box-shadow: 0 4px 0 #a94f3b;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px dashed #d4a65a;
+            margin: 25px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <h1>🌿 孟璋奖励岛 🌿</h1>
+
+        <div class="grass">
+            🌱 🌼 🌱 🌷 🌱 🌻 🌱
+        </div>
+
+        <p>收集点数，解锁礼物！</p>
+
+        <div class="score">
+            <span id="score">0</span>
+        </div>
+
+        <div id="messageBox" class="message-box">
+            🎉 解锁成功！
+        </div>
+
+        <div class="reward-box">
+            <h2>🎁 下一个奖励</h2>
+
+            <p>奖励名称：<span id="nextGift">扎古抱枕</span></p>
+            <p>目标点数：<span id="targetPoints">20</span></p>
+            <p>还差：<span id="needPoints">20</span> 点</p>
+
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+
+            <p>当前进度：<span id="progressText">0%</span></p>
+        </div>
+
+        <button onclick="changePoints(1)">+1 点</button>
+        <button onclick="changePoints(2)">+2 点</button>
+        <button onclick="changePoints(5)">+5 点</button>
+        <button onclick="changePoints(10)">+10 点</button>
+
+        <br><br>
+
+        <button onclick="changePoints(-1)">-1 点</button>
+        <button onclick="changePoints(-5)">-5 点</button>
+
+        <br><br>
+
+        <button class="danger" onclick="resetPoints()">清零积分</button>
+
+        <hr>
+
+        <h2>📖 岛屿任务规则</h2>
+
+        <div class="reward-box">
+            <p>⚔️ 完成每日任务：+2 点</p>
+            <p>🏃 运动一次：+2 点</p>
+            <p>🍱 好好吃饭：+1 点</p>
+            <p>💧 喝够水：+1 点</p>
+            <p>🧺 完成生活任务：+2 点</p>
+            <p>📦 主动解决一个问题：+3 点</p>
+            <p>🚀 完成重要任务：+5 点</p>
+            <p>🎯 完成周目标：+10 点</p>
+            <p>🌟 隐藏任务：+5 点</p>
+            <p>👑 特殊成就：+20 点</p>
+        </div>
+
+        <h2>🎁 奖励列表</h2>
+
+        <div id="giftList" class="reward-box"></div>
+
+    </div>
+
+    <script>
+        const gifts = [
+            { name: "扎古抱枕", need: 20 },
+            { name: "迪迦奥特曼 CocoMate", need: 50 },
+            { name: "SHF 巴尔坦星人", need: 80 },
+            { name: "SHF Chaser", need: 120 },
+            { name: "SHF 真骨雕 龙骑", need: 180 },
+            { name: "SHF 真骨雕 龙骑（另一版）", need: 220 },
+            { name: "SHF 真骨雕 空我", need: 260 },
+            { name: "SHF Faiz（二手全配）", need: 450 },
+            { name: "SHF Faiz（全新现货）", need: 600 }
+        ];
+
+        let points = Number(localStorage.getItem("score")) || 0;
+
+        updatePage();
+
+        function getUnlockedCount(currentPoints) {
+            return gifts.filter(function(gift) {
+                return currentPoints >= gift.need;
+            }).length;
+        }
+
+        function updateGiftList() {
+            const giftList = document.getElementById("giftList");
+
+            giftList.innerHTML = "";
+
+            for (let i = 0; i < gifts.length; i++) {
+                const gift = gifts[i];
+
+                const giftRow = document.createElement("div");
+
+                if (points >= gift.need) {
+                    giftRow.className = "gift-row unlocked";
+                    giftRow.textContent = "✅ " + gift.name + " —— 已解锁（" + gift.need + " 点）";
+                } else {
+                    giftRow.className = "gift-row locked";
+                    giftRow.textContent = "🔒 " + gift.name + " —— 还差 " + (gift.need - points) + " 点（目标 " + gift.need + " 点）";
+                }
+
+                giftList.appendChild(giftRow);
+            }
+        }
+
+        function updatePage() {
+            document.getElementById("score").textContent = points;
+
+            let nextGift = null;
+
+            for (let i = 0; i < gifts.length; i++) {
+                if (points < gifts[i].need) {
+                    nextGift = gifts[i];
+                    break;
+                }
+            }
+
+            if (nextGift === null) {
+                document.getElementById("nextGift").textContent = "全部奖励已解锁";
+                document.getElementById("targetPoints").textContent = "完成";
+                document.getElementById("needPoints").textContent = "0";
+                document.getElementById("progressFill").style.width = "100%";
+                document.getElementById("progressText").textContent = "100%";
+            } else {
+                document.getElementById("nextGift").textContent = nextGift.name;
+                document.getElementById("targetPoints").textContent = nextGift.need;
+                document.getElementById("needPoints").textContent = nextGift.need - points;
+
+                let progress = Math.floor((points / nextGift.need) * 100);
+
+                if (progress > 100) {
+                    progress = 100;
+                }
+
+                document.getElementById("progressFill").style.width = progress + "%";
+                document.getElementById("progressText").textContent = progress + "%";
+            }
+
+            updateGiftList();
+        }
+
+        function playScoreAnimation() {
+            const scoreBox = document.querySelector(".score");
+
+            scoreBox.classList.remove("pop");
+            void scoreBox.offsetWidth;
+            scoreBox.classList.add("pop");
+        }
+
+        function showMessage(text) {
+            const messageBox = document.getElementById("messageBox");
+
+            messageBox.textContent = text;
+            messageBox.style.display = "block";
+
+            setTimeout(function() {
+                messageBox.style.display = "none";
+            }, 3000);
+        }
+
+        function changePoints(amount) {
+            const oldPoints = points;
+            const oldUnlockedCount = getUnlockedCount(oldPoints);
+
+            points = points + amount;
+
+            if (points < 0) {
+                points = 0;
+            }
+
+            const newUnlockedCount = getUnlockedCount(points);
+
+            localStorage.setItem("score", points);
+
+            updatePage();
+            playScoreAnimation();
+
+            if (newUnlockedCount > oldUnlockedCount) {
+                const unlockedGift = gifts[newUnlockedCount - 1];
+                showMessage("🎉 解锁成功！获得新奖励：" + unlockedGift.name);
+            }
+        }
+
+        function resetPoints() {
+            if (confirm("确定要清零积分吗？")) {
+                points = 0;
+                localStorage.setItem("score", points);
+                updatePage();
+                playScoreAnimation();
+                showMessage("积分已经清零啦。");
+            }
+        }
+    </script>
+
+</body>
+</html>
